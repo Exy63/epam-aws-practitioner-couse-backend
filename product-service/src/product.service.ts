@@ -1,4 +1,4 @@
-import { ProductI } from './interfaces/product.interface'
+import { ProductI } from '@interfaces/product.interface'
 import { v4 } from 'uuid'
 
 class ProductService {
