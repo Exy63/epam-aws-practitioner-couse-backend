@@ -3,8 +3,7 @@ import type { Config } from 'jest'
 const config: Config = {
   verbose: true,
   moduleNameMapper: {
-    '@libs/api-gateway': '<rootDir>/src/libs/api-gateway',
-    '@libs/lambda': '<rootDir>/src/libs/lambda',
+    '@libs/(.*)': '<rootDir>/src/libs/$1',
   },
 }
 
