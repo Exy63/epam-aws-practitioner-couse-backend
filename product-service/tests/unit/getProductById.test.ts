@@ -1,3 +1,4 @@
+import { expect, describe, it } from '@jest/globals'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { getProductById } from '../../src/functions/getProductById/handler'
 import productService from '../../src/product.service'
