@@ -5,17 +5,20 @@ class ProductService {
   private products: ProductI[] = [
     {
       id: '0dff3aa9-8ea9-4098-9ce0-921771c9d167',
-      productName: 'Pen',
+      title: 'Pen',
+      description: 'Nice automatic pen. Best quality.',
       price: 2,
     },
     {
       id: '49644adf-56eb-4d50-b214-a5cc233510c5',
-      productName: 'Pencil',
+      title: 'Pencil',
+      description: 'Black 2B pencil. Best thing for scratching.',
       price: 1,
     },
     {
       id: '8f260efa-a54e-4522-903d-16b0686c2d34',
-      productName: 'Book',
+      title: 'Book',
+      description: 'Very intelligent book. Makes people smarter.',
       price: 5,
     },
   ]
