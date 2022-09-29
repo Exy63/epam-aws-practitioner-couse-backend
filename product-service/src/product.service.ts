@@ -23,6 +23,11 @@ class ProductService {
     const products = this.products
     return products
   }
+
+  public getProductById(id: string): ProductI | undefined {
+    const foundProduct = this.products.find((product) => product.uuid === id)
+    return foundProduct
+  }
 }
 
 export default new ProductService()
