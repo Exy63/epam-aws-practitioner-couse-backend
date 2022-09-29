@@ -16,7 +16,10 @@ const getProductById: ValidatedEventAPIGatewayProxyEvent<
   const foundProduct = productService.getProductById(productId)
 
   if (!foundProduct) {
-    return formatJSONErrorResponse('Product not found', 404)
+    return formatJSONErrorResponse(
+      `Product with id ${productId} was not found`,
+      404
+    )
   }
 
   return formatJSONResponse({
