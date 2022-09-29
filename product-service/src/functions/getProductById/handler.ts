@@ -9,7 +9,7 @@ import schema from './schema'
 
 import productService from '../../product.service'
 
-const getProductById: ValidatedEventAPIGatewayProxyEvent<
+export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
 > = async (event) => {
   const productId = event.pathParameters.id
