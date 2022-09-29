@@ -3,7 +3,7 @@ import { middyfy } from '@libs/lambda'
 
 import productService from '../../product.service'
 
-const getProductList = async () => {
+export const getProductList = async () => {
   const productList = productService.getProducts()
 
   return formatJSONResponse({
