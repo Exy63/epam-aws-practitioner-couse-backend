@@ -3,7 +3,7 @@ import {
   PRODUCTS_TABLE_NAME,
   STOCKS_TABLE_NAME,
 } from '@db/constants/table-name.constants'
-import { put } from '@db/tools'
+import { insert } from '@db/tools'
 import { ProductI } from '@interfaces/product.interface'
 
 const initProducts: ProductI[] = [
@@ -28,9 +28,9 @@ const initProducts: ProductI[] = [
 ]
 
 initProducts.forEach((product) => {
-  put(product, PRODUCTS_TABLE_NAME)
+  insert(product, PRODUCTS_TABLE_NAME)
 
   const count = Math.floor(Math.random() * 10) + 1
 
-  put({ product_id: product.id, count }, STOCKS_TABLE_NAME)
+  insert({ product_id: product.id, count }, STOCKS_TABLE_NAME)
 })
