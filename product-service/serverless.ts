@@ -3,6 +3,10 @@ import type { AWS } from '@serverless/typescript'
 import hello from '@functions/hello'
 import getProductList from '@functions/getProductList'
 import getProductById from '@functions/getProductById'
+import {
+  PRODUCTS_TABLE_NAME,
+  STOCKS_TABLE_NAME,
+} from '@db/constants/table-name.constants'
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -24,6 +28,54 @@ const serverlessConfiguration: AWS = {
   },
   // import the function via paths
   functions: { hello, getProductList, getProductById },
+  resources: {
+    Resources: {
+      ProductsTable: {
+        Type: 'AWS::DynamoDB::Table',
+        Properties: {
+          TableName: PRODUCTS_TABLE_NAME,
+          AttributeDefinitions: [
+            {
+              AttributeName: 'id',
+              AttributeType: 'S',
+            },
+          ],
+          KeySchema: [
+            {
+              AttributeName: 'id',
+              KeyType: 'HASH',
+            },
+          ],
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 5,
+            WriteCapacityUnits: 5,
+          },
+        },
+      },
+      StocksTable: {
+        Type: 'AWS::DynamoDB::Table',
+        Properties: {
+          TableName: STOCKS_TABLE_NAME,
+          AttributeDefinitions: [
+            {
+              AttributeName: 'product_id',
+              AttributeType: 'S',
+            },
+          ],
+          KeySchema: [
+            {
+              AttributeName: 'product_id',
+              KeyType: 'HASH',
+            },
+          ],
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 5,
+            WriteCapacityUnits: 5,
+          },
+        },
+      },
+    },
+  },
   package: { individually: true },
   custom: {
     esbuild: {
