@@ -32,5 +32,5 @@ initProducts.forEach((product) => {
 
   const count = Math.floor(Math.random() * 10) + 1
 
-  put({ id: v4(), product_id: product.id, count }, STOCKS_TABLE_NAME)
+  put({ product_id: product.id, count }, STOCKS_TABLE_NAME)
 })
