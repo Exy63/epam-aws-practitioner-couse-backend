@@ -1,6 +1,6 @@
-import { handlerPath } from '@libs/handler-resolver';
+import { handlerPath } from '@libs/handler-resolver'
 
-export default {
+export const getProductList = {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {
@@ -10,4 +10,4 @@ export default {
       },
     },
   ],
-};
+}

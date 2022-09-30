@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript'
 
-import functions from '@functions/index'
+import * as functions from '@functions'
 import dbConfig from '@db/config'
 
 const serverlessConfiguration: AWS = {
