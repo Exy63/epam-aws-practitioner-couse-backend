@@ -8,12 +8,17 @@ import { middyfy } from '@libs/lambda'
 import schema from './schema'
 
 import productService from '../../product.service'
+import stockService from 'src/stock.service'
 
 export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
 > = async (event) => {
   const productId = event.pathParameters.id
-  const foundProduct = productService.getProductById(productId)
+
+  const [foundProduct, foundStock] = await Promise.all([
+    productService.getProductById(productId),
+    stockService.getStockByProductId(productId),
+  ])
 
   if (!foundProduct) {
     return formatJSONErrorResponse(
@@ -22,8 +27,13 @@ export const getProductById: ValidatedEventAPIGatewayProxyEvent<
     )
   }
 
+  const count = foundStock?.count || 0
+
   return formatJSONResponse({
-    products: foundProduct,
+    products: {
+      ...foundProduct,
+      count,
+    },
   })
 }
 

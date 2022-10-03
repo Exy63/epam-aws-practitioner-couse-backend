@@ -4,10 +4,10 @@ import { middyfy } from '@libs/lambda'
 import productService from '../../product.service'
 
 export const getProductList = async () => {
-  const productList = productService.getProducts()
+  const products = await productService.getProducts()
 
   return formatJSONResponse({
-    products: productList,
+    products,
   })
 }
 
