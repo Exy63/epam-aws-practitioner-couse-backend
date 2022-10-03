@@ -27,6 +27,15 @@ class StockService {
 
     return foundStock as StockI
   }
+
+  public async createStock(stock: StockI): Promise<void> {
+    await dynamo
+      .put({
+        TableName: STOCKS_TABLE_NAME,
+        Item: { ...stock },
+      })
+      .promise()
+  }
 }
 
 export default new StockService()
