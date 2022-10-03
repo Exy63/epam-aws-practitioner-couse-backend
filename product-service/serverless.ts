@@ -33,12 +33,22 @@ const serverlessConfiguration: AWS = {
       },
       {
         Effect: 'Allow',
+        Action: 'dynamodb:PutItem',
+        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
         Action: 'dynamodb:Scan',
         Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
       },
       {
         Effect: 'Allow',
         Action: 'dynamodb:Query',
+        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:PutItem',
         Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
       },
     ],
