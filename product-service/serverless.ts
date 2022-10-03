@@ -31,6 +31,11 @@ const serverlessConfiguration: AWS = {
         Action: 'dynamodb:Query',
         Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
       },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:Query',
+        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
+      },
     ],
   },
   // import the function via paths
