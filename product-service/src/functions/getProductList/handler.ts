@@ -6,6 +6,8 @@ import productService from '../../product.service'
 
 export const getProductList = async () => {
   try {
+    console.log('Lambda getProductList is invoked! No arguments needed.')
+
     const [products, stocks] = await Promise.all([
       productService.getProducts(),
       stockService.getStocks(),

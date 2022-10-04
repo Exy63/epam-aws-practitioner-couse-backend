@@ -14,6 +14,10 @@ export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
 > = async (event) => {
   try {
+    console.log(
+      'Lambda getProductById is invoked! productId: ' + event.pathParameters.id
+    )
+
     const productId = event.pathParameters.id
 
     const [foundProduct, foundStock] = await Promise.all([
