@@ -11,7 +11,8 @@ const hello = async () => {
         'GET - /products': 'Gives you a full array of products',
         'GET - /products/${id}':
           'Gives you one searched product from an array of products',
-        'POST - /products': 'Creates a new product',
+        'POST - /products':
+          'Creates a new product. Required properties {"title": string, "price": number, "count": number}',
       },
     })
   } catch (e) {
