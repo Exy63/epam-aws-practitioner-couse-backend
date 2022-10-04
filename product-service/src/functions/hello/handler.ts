@@ -8,6 +8,7 @@ const hello = async () => {
     return formatJSONResponse({
       message: `Hello and welcome to my API!`,
       endpoints: {
+        'GET - /': "You are here!",
         'GET - /products': 'Gives you a full array of products',
         'GET - /products/${id}':
           'Gives you one searched product from an array of products',
