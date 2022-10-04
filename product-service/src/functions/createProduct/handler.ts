@@ -8,7 +8,7 @@ import { middyfy } from '@libs/lambda'
 import schema from './schema'
 
 import productService from '../../product.service'
-import stockService from 'src/stock.service'
+import stockService from '../../stock.service'
 
 export const createProduct: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
