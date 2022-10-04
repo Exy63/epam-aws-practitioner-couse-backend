@@ -3,7 +3,7 @@ import {
   PRODUCTS_TABLE_NAME,
   STOCKS_TABLE_NAME,
 } from '@db/constants/table-name.constants'
-import { insert } from '@db/tools'
+import { dynamo } from '@db/tools'
 import { ProductI } from '@interfaces/product.interface'
 
 const initProducts: ProductI[] = [
@@ -27,10 +27,20 @@ const initProducts: ProductI[] = [
   },
 ]
 
-initProducts.forEach((product) => {
-  insert(product, PRODUCTS_TABLE_NAME)
-
+initProducts.forEach(async (product) => {
   const count = Math.floor(Math.random() * 10) + 1
-
-  insert({ product_id: product.id, count }, STOCKS_TABLE_NAME)
+  await Promise.all([
+    dynamo
+      .put({
+        TableName: PRODUCTS_TABLE_NAME,
+        Item: { ...product },
+      })
+      .promise(),
+    dynamo
+      .put({
+        TableName: STOCKS_TABLE_NAME,
+        Item: { product_id: product.id, count },
+      })
+      .promise(),
+  ])
 })
