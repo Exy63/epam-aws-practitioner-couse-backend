@@ -13,28 +13,32 @@ import stockService from '../../stock.service'
 export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
 > = async (event) => {
-  const productId = event.pathParameters.id
+  try {
+    const productId = event.pathParameters.id
 
-  const [foundProduct, foundStock] = await Promise.all([
-    productService.getProductById(productId),
-    stockService.getStockByProductId(productId),
-  ])
+    const [foundProduct, foundStock] = await Promise.all([
+      productService.getProductById(productId),
+      stockService.getStockByProductId(productId),
+    ])
 
-  if (!foundProduct) {
-    return formatJSONErrorResponse(
-      `Product with id ${productId} was not found`,
-      404
-    )
+    if (!foundProduct) {
+      return formatJSONErrorResponse(
+        `Product with id ${productId} was not found`,
+        404
+      )
+    }
+
+    const count = foundStock?.count || 0
+
+    return formatJSONResponse({
+      products: {
+        ...foundProduct,
+        count,
+      },
+    })
+  } catch (e) {
+    return formatJSONErrorResponse(e, 500)
   }
-
-  const count = foundStock?.count || 0
-
-  return formatJSONResponse({
-    products: {
-      ...foundProduct,
-      count,
-    },
-  })
 }
 
 export const main = middyfy(getProductById)
