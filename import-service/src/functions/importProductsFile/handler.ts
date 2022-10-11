@@ -20,14 +20,14 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<
     const params = {
       Bucket: BUCKET,
       Key: `uploaded/${name}.csv`,
-      Expires: 60,
+      Expires: 60 * 5, // 5 minutes
       ContentType: 'text/csv',
     }
 
     const url = await s3.getSignedUrl('putObject', params)
 
     return formatJSONResponse({
-      result: 'Hey! You are good!',
+      result: `You are good, here is your URL to upload a .csv file! Please, make sure that you send PUT request with {"Content-Type": "text/csv"} in headers`,
       url,
     })
   } catch (e) {
