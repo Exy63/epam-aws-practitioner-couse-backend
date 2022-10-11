@@ -6,7 +6,14 @@ export const importProductsFile = {
     {
       http: {
         method: 'get',
-        path: '/import/{name}',
+        path: '/import',
+        request: {
+          parameters: {
+            querystrings: {
+              name: true,
+            },
+          },
+        },
       },
     },
   ],

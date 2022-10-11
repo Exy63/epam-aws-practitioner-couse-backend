@@ -1,6 +1,6 @@
 export default {
   type: 'object',
-  pathParams: {
+  queryStringParameters: {
     name: { type: 'string', required: true },
   },
 } as const
