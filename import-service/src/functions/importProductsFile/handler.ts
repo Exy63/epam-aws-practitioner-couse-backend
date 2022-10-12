@@ -21,7 +21,8 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<
     const params = {
       Bucket: BUCKET,
       Key: `uploaded/${name}`,
-      Expires: 60 * 5, // 5 minutes
+      Expires: 60 * 2, // 2 minutes
+      ContentType: 'text/csv',
     }
 
     const url = await s3.getSignedUrl('putObject', params)
