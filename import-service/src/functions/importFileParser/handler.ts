@@ -42,7 +42,7 @@ const importFileParser = async (event: any) => {
   })
 
   if (isCopied) {
-    await new Promise<void>((resolve, reject) => {
+    new Promise<void>((resolve, reject) => {
       s3.deleteObject(paramsToRead, function (err, data) {
         if (err) reject(err) // error
         else resolve(data) // success
