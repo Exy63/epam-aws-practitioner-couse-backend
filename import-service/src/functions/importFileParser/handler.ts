@@ -34,12 +34,21 @@ const importFileParser = async (event: any) => {
       })
   })
 
-  const isCopied = await new Promise<void>((resolve, reject) => {
+  const isCopied = await new Promise<any>((resolve, reject) => {
     s3.copyObject(paramsToWrite, (err, data) => {
-      if (err) reject(err) // an error occurred
-      else resolve(data) // successful response
+      if (err) reject(err) // error
+      else resolve(data) // success
     })
   })
+
+  if (isCopied) {
+    await new Promise<any>((resolve, reject) => {
+      s3.deleteObject(paramsToRead, function (err, data) {
+        if (err) reject(err) // error
+        else resolve(data) // success
+      })
+    })
+  }
 }
 
 export const main = middyfy(importFileParser)
