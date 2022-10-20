@@ -7,15 +7,37 @@ const BUCKET = 'superstore-import'
 
 const importFileParser = async (event: any) => {
   console.log('Lambda importFileParser is invoked! Event: ', event)
-  const records = event.Records[0]
 
-  const params = { Bucket: BUCKET, Key: records.s3.object.key }
+  const csvKey = event.Records[0].s3.object.key
+  const [oldPrefix, fileName] = csvKey.split('/')
+  const newPrefix = 'parsed'
 
-  const readStream = s3.getObject(params).createReadStream()
+  const paramsToRead = { Bucket: BUCKET, Key: `${oldPrefix}/${fileName}` }
+  const paramsToWrite = {
+    Bucket: BUCKET,
+    CopySource: `${BUCKET}/${oldPrefix}/${fileName}`,
+    Key: `${newPrefix}/${fileName}`,
+  }
 
-  await new Promise(() => {
-    readStream.pipe(csv()).on('data', (chunk) => {
-      console.log('🚀 chunk ->', chunk)
+  const readStream = s3.getObject(paramsToRead).createReadStream()
+  await new Promise<void>((resolve, reject) => {
+    readStream
+      .pipe(csv())
+      .on('data', (chunk) => {
+        console.log('🚀 chunk ->', chunk)
+      })
+      .on('error', (err) => {
+        reject(err)
+      })
+      .on('end', () => {
+        resolve()
+      })
+  })
+
+  const isCopied = await new Promise<void>((resolve, reject) => {
+    s3.copyObject(paramsToWrite, (err, data) => {
+      if (err) reject(err) // an error occurred
+      else resolve(data) // successful response
     })
   })
 }
