@@ -1,11 +1,11 @@
 import { middyfy } from '@libs/lambda'
 const csv = require('csv-parser')
 const AWS = require('aws-sdk')
-const s3 = new AWS.S3({ region: 'eu-west-1' })
 
 const BUCKET = 'superstore-import'
 
 const importFileParser = async (event: any) => {
+  const s3 = new AWS.S3({ region: 'eu-west-1' })
   console.log('Lambda importFileParser is invoked! Event: ', event)
 
   const csvKey = event.Records[0].s3.object.key
@@ -43,7 +43,7 @@ const importFileParser = async (event: any) => {
 
   if (isCopied) {
     new Promise<void>((resolve, reject) => {
-      s3.deleteObject(paramsToRead, function (err, data) {
+      s3.deleteObject(paramsToRead, (err, data) => {
         if (err) reject(err) // error
         else resolve(data) // success
       })
