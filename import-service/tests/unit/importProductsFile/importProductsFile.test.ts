@@ -73,15 +73,15 @@ AWSMock.mock(
 )
 
 describe('importProductsFile handler tests', () => {
-  it('checks is test file uploaded to S3', async () => {
+  it('check is test file uploaded to S3', async () => {
     expect(fs.existsSync(`${s3Path}/uploaded/${testFileName}`)).toBe(true)
   })
 
-  it('checks is S3 parsed directory empty', async () => {
+  it('check is S3 parsed directory empty', async () => {
     expect(fs.readdirSync(`${s3Path}/parsed`).length).toBe(0)
   })
 
-  it('tests importProductsFile on success', async () => {
+  it('test importProductsFile on success', async () => {
     await importFileParser({
       Records: [{ s3: { object: { key: `parsed/${testFileName}` } } }],
     })
@@ -92,5 +92,16 @@ describe('importProductsFile handler tests', () => {
 
     // deleted from uploaded
     expect(fs.readdirSync(`${s3Path}/uploaded`).length).toBe(0)
+  })
+
+  it('test importProductsFile on failure', async () => {
+    const res = await importFileParser({
+      Records: [{ s3: { object: { key: `FakeKey` } } }],
+    })
+
+    expect(res.statusCode).toBe(400)
+    expect(JSON.parse(res.body)).toEqual({
+      error: 'Bad Request',
+    })
   })
 })
