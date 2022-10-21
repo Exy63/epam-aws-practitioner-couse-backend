@@ -1,7 +1,7 @@
 import { formatJSONErrorResponse } from '@libs/api-gateway'
 import { middyfy } from '@libs/lambda'
 const csv = require('csv-parser')
-const AWS = require('aws-sdk')
+import * as AWS from 'aws-sdk'
 
 const BUCKET = 'superstore-import'
 
@@ -36,18 +36,20 @@ const importFileParser = async (event: any) => {
         })
     })
 
-    const isCopied = await new Promise<any>((resolve, reject) => {
-      s3.copyObject(paramsToWrite, (err, data) => {
-        if (err) reject(err) // error
-        else resolve(data) // success
-      })
-    })
-
-    if (isCopied) {
-      new Promise<void>((resolve, reject) => {
-        s3.deleteObject(paramsToRead, (err, data) => {
+    const isCopied = await new Promise<AWS.S3.CopyObjectOutput>(
+      (resolve, reject) => {
+        s3.copyObject(paramsToWrite, (err, data) => {
           if (err) reject(err) // error
           else resolve(data) // success
+        })
+      }
+    )
+
+    if (isCopied) {
+      new Promise<AWS.S3.DeleteObjectOutput>((resolve, reject) => {
+        s3.deleteObject(paramsToRead, (err) => {
+          if (err) reject(err) // error
+          else resolve({}) // success
         })
       })
     }
