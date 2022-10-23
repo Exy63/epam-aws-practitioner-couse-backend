@@ -51,12 +51,25 @@ const serverlessConfiguration: AWS = {
         Action: 'dynamodb:PutItem',
         Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
       },
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: { 'Fn::GetAtt': ['CatalogItemsQueue', 'Arn'] },
+      },
     ],
   },
   // import the function via paths
   functions,
   resources: {
-    Resources: dbConfig,
+    Resources: {
+      ...dbConfig,
+      CatalogItemsQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'CatalogItemsQueue',
+        },
+      },
+    },
   },
   package: { individually: true },
   custom: {

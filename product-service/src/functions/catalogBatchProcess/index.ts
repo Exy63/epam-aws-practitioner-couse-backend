@@ -6,8 +6,8 @@ export const catalogBatchProcess: AWS['functions']['k'] = {
   events: [
     {
       sqs: {
-        arn: '', // TODO
-        batchSize: 2,
+        arn: { 'Fn::GetAtt': ['CatalogItemsQueue', 'Arn'] },
+        batchSize: 5,
       },
     },
   ],
