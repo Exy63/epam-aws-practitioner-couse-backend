@@ -3,10 +3,9 @@ import { middyfy } from '@libs/lambda'
 const csv = require('csv-parser')
 import * as AWS from 'aws-sdk'
 
-const BUCKET = 'superstore-import'
-
 const importFileParser = async (event: any) => {
   const s3 = new AWS.S3({ region: 'eu-west-1' })
+  const sqs = new AWS.SQS()
   console.log('Lambda importFileParser is invoked! Event: ', event)
 
   try {
@@ -14,10 +13,13 @@ const importFileParser = async (event: any) => {
     const [oldPrefix, fileName] = csvKey.split('/')
     const newPrefix = 'parsed'
 
-    const paramsToRead = { Bucket: BUCKET, Key: `${oldPrefix}/${fileName}` }
+    const paramsToRead = {
+      Bucket: process.env.IMPORT_BUCKET_NAME,
+      Key: `${oldPrefix}/${fileName}`,
+    }
     const paramsToWrite = {
-      Bucket: BUCKET,
-      CopySource: `${BUCKET}/${oldPrefix}/${fileName}`,
+      Bucket: process.env.IMPORT_BUCKET_NAME,
+      CopySource: `${process.env.IMPORT_BUCKET_NAME}/${oldPrefix}/${fileName}`,
       Key: `${newPrefix}/${fileName}`,
     }
 
@@ -26,7 +28,14 @@ const importFileParser = async (event: any) => {
       readStream
         .pipe(csv())
         .on('data', (chunk) => {
-          console.log('🚀 chunk ->', chunk)
+          console.log('🚀 ~ chunk', chunk)
+          const message = JSON.stringify(chunk)
+          sqs.sendMessage(
+            { QueueUrl: process.env.SQS_URL, MessageBody: message },
+            () => {
+              console.log('Send message: ', message)
+            }
+          )
         })
         .on('error', (err) => {
           reject(err)
