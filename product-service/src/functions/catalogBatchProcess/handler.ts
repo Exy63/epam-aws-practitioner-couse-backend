@@ -3,7 +3,11 @@ import { middyfy } from "@libs/lambda";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { v4 } from "uuid";
 import { dynamo } from "@db/tools";
-import { PRODUCTS_TABLE_NAME, STOCKS_TABLE_NAME } from "@db/constants/table-name.constants";
+import {
+  PRODUCTS_TABLE_NAME,
+  STOCKS_TABLE_NAME,
+} from "@db/constants/table-name.constants";
+import * as AWS from "aws-sdk";
 
 interface CatalogBatchProcessEventI extends APIGatewayProxyEvent {
   Records: {
@@ -20,6 +24,9 @@ interface ParsedBody {
 
 const catalogBatchProcess = async (event: CatalogBatchProcessEventI) => {
   console.log("Lambda catalogBatchProcess is invoked! Event: ", event);
+  const sns = new AWS.SNS({ region: "eu-west-1" });
+  const promises = [];
+
   try {
     const validatedProducts = event.Records.map(({ body }) => {
       const parsedBody: ParsedBody = JSON.parse(body);
@@ -34,8 +41,6 @@ const catalogBatchProcess = async (event: CatalogBatchProcessEventI) => {
       }
     });
     console.log("🚀 ~  validatedProducts", validatedProducts);
-
-    const promises = [];
 
     validatedProducts.forEach(async (product) => {
       const { count, ...productInfo } = product;
@@ -61,6 +66,23 @@ const catalogBatchProcess = async (event: CatalogBatchProcessEventI) => {
     });
 
     await Promise.all(promises);
+
+    const processedMessages = validatedProducts
+      .map((product) => JSON.stringify(product))
+      .join(" ");
+
+    await sns
+      .publish(
+        {
+          Subject: "New Products Has Been Processed!",
+          Message: processedMessages,
+          TopicArn: process.env.CREATE_PRODUCT_TOPIC_ARN,
+        },
+        () => {
+          console.log("Email has been successfully sent");
+        }
+      )
+      .promise();
   } catch (e) {
     return formatJSONErrorResponse(e, 500);
   }
