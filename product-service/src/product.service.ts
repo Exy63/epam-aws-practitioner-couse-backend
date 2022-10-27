@@ -1,46 +1,46 @@
+import { PRODUCTS_TABLE_NAME } from '@db/constants/table-name.constants'
+import { dynamo } from '@db/tools'
 import { ProductI } from '@interfaces/product.interface'
 import { v4 } from 'uuid'
 
 class ProductService {
-  private products: ProductI[] = [
-    {
-      id: '0dff3aa9-8ea9-4098-9ce0-921771c9d167',
-      title: 'Pen',
-      description: 'Nice automatic pen. Best quality.',
-      price: 2,
-    },
-    {
-      id: '49644adf-56eb-4d50-b214-a5cc233510c5',
-      title: 'Pencil',
-      description: 'Black 2B pencil. Best thing for scratching.',
-      price: 1,
-    },
-    {
-      id: '8f260efa-a54e-4522-903d-16b0686c2d34',
-      title: 'Book',
-      description: 'Very intelligent book. Makes people smarter.',
-      price: 5,
-    },
-  ]
+  public async getProducts() {
+    const products = (
+      await dynamo
+        .scan({
+          TableName: PRODUCTS_TABLE_NAME,
+        })
+        .promise()
+    ).Items
 
-  public getProducts(): ProductI[] {
-    const products = this.products
-    return products
+    return products as ProductI[]
   }
 
-  public getProductById(id: string): ProductI | undefined {
-    const foundProduct = this.products.find((product) => product.id === id)
-    return foundProduct
+  public async getProductById(id: string) {
+    const foundProduct = (
+      await dynamo
+        .query({
+          TableName: PRODUCTS_TABLE_NAME,
+          KeyConditionExpression: `id = :id`,
+          ExpressionAttributeValues: { ':id': id },
+        })
+        .promise()
+    ).Items[0]
+
+    return foundProduct as ProductI
   }
 
-  public createProduct(product: Omit<ProductI, 'id'>): ProductI {
+  public async createProduct(product: Omit<ProductI, 'id'>): Promise<string> {
     const id = v4()
 
-    const newRecord = { ...product, id }
+    await dynamo
+      .put({
+        TableName: PRODUCTS_TABLE_NAME,
+        Item: { ...product, id },
+      })
+      .promise()
 
-    this.products.push(newRecord)
-
-    return newRecord
+    return id
   }
 }
 

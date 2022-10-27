@@ -1,11 +1,11 @@
 import { handlerPath } from '@libs/handler-resolver'
 
-export const getProductList = {
+export const createProduct = {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {
       http: {
-        method: 'get',
+        method: 'post',
         path: 'products',
       },
     },

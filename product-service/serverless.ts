@@ -1,8 +1,7 @@
 import type { AWS } from '@serverless/typescript'
 
-import hello from '@functions/hello'
-import getProductList from '@functions/getProductList'
-import getProductById from '@functions/getProductById'
+import * as functions from '@functions'
+import dbConfig from '@db/config'
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -21,9 +20,44 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:Scan',
+        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:Query',
+        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:PutItem',
+        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:Scan',
+        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:Query',
+        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'dynamodb:PutItem',
+        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
+      },
+    ],
   },
   // import the function via paths
-  functions: { hello, getProductList, getProductById },
+  functions,
+  resources: {
+    Resources: dbConfig,
+  },
   package: { individually: true },
   custom: {
     esbuild: {

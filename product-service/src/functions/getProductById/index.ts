@@ -1,6 +1,6 @@
 import { handlerPath } from '@libs/handler-resolver'
 
-export default {
+export const getProductById = {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {

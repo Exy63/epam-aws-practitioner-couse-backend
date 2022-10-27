@@ -3,17 +3,19 @@ import { APIGatewayProxyEvent } from 'aws-lambda'
 import { getProductById } from '../../src/functions/getProductById/handler'
 import productService from '../../src/product.service'
 
-describe('Unit test for getProductById handler', function () {
+describe('Tests for getProductById handler', function () {
   it('Checks getProductById on success', async () => {
-    const actualProduct = productService.getProducts()[0]
+    const actualProduct = (await productService.getProducts())[0]
+    const productId = actualProduct.id
 
     const event: APIGatewayProxyEvent = {
       pathParameters: {
-        id: actualProduct.id,
+        id: productId,
       },
     } as any
     const { statusCode, body } = await getProductById(event)
-    const recievedProduct = JSON.parse(body).products
+
+    const { count, ...recievedProduct } = JSON.parse(body).products
 
     expect(statusCode).toEqual(200)
     expect(actualProduct).toEqual(recievedProduct)
