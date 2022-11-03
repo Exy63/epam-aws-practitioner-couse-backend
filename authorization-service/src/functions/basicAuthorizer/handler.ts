@@ -1,4 +1,3 @@
-import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
 import { APIGatewayTokenAuthorizerEvent } from "aws-lambda";
 
@@ -23,26 +22,25 @@ const basicAuthorizer = async (event: APIGatewayTokenAuthorizerEvent) => {
     }
 
     const isAuthorized = process.env[username] === password;
-    if (!isAuthorized) {
-      return formatJSONResponse(
-        {
-          message: `Invalid login or password!`,
-        },
-        403
-      );
-    }
+    if (!isAuthorized) throw "Login or password is incorrect";
 
-    return formatJSONResponse({
-      message: `Your token is valid! Welcome aboard!`,
-    });
+    return generatePolicy(true);
   } catch (e) {
-    return formatJSONResponse(
-      {
-        message: e,
-      },
-      401
-    );
+    console.log(JSON.stringify({ errorMessage: e }));
+    return generatePolicy(false);
   }
 };
+
+const generatePolicy = (isAllowed = false) => ({
+  principalId: "token",
+  policyDocument: {
+    Version: "2012-10-17",
+    Statement: {
+      Action: "execute-api:Invoke",
+      Effect: isAllowed ? "Allow" : "Deny",
+      Resource: "*",
+    },
+  },
+});
 
 export const main = middyfy(basicAuthorizer);
