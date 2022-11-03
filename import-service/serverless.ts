@@ -21,6 +21,8 @@ const serverlessConfiguration: AWS = {
       SQS_URL:
         "https://sqs.eu-west-1.amazonaws.com/203651338148/CatalogItemsQueue",
       IMPORT_BUCKET_NAME: "superstore-import",
+      BASIC_AUTHORIZER_ARN:
+        "arn:aws:lambda:eu-west-1:203651338148:function:authorization-service-dev-basicAuthorizer",
     },
     iam: {
       role: {
