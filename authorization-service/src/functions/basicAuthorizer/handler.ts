@@ -1,12 +1,12 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
-import { APIGatewayEvent } from "aws-lambda";
+import { APIGatewayTokenAuthorizerEvent } from "aws-lambda";
 
-const basicAuthorizer = async (event: APIGatewayEvent) => {
+const basicAuthorizer = async (event: APIGatewayTokenAuthorizerEvent) => {
   console.log("Lambda basicAuthorizer is invoked Event: ", event);
 
   try {
-    const authHeaderValue = event.headers?.Authorization;
+    const authHeaderValue = event?.authorizationToken;
     if (!authHeaderValue) {
       throw `Token is not provided`;
     }
