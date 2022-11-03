@@ -5,7 +5,7 @@ import * as functions from "@functions";
 const serverlessConfiguration: AWS = {
   service: "authorization-service",
   frameworkVersion: "3",
-  plugins: ["serverless-esbuild"],
+  plugins: ["serverless-esbuild", "serverless-dotenv-plugin"],
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
@@ -18,6 +18,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      EXY63: process.env.EXY63
     },
   },
   // import the function via paths
