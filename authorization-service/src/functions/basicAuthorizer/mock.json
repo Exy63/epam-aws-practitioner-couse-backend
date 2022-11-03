@@ -1,5 +1,11 @@
 {
-  "type": "TOKEN",
-  "methodArn": "arn:aws:execute-api:eu-west-1:203651338148:06kpzmlefk/dev/GET/import",
-  "authorizationToken": "BasicYWxhOmRpbg=="
+  "resource": "/auth",
+  "path": "/auth",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Authorization": "Basic RXh5NjM6VEVTVF9QQVNTV09SRA=="
+  },
+  "body": null
 }
