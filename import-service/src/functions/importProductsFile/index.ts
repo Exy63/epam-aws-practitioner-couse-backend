@@ -8,6 +8,7 @@ export const importProductsFile: AWS["functions"]["k"] = {
       http: {
         method: "get",
         path: "/import",
+        cors: true,
         request: {
           parameters: {
             querystrings: {
