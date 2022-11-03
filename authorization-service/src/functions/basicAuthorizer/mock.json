@@ -1,0 +1,11 @@
+{
+  "resource": "/auth",
+  "path": "/auth",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Authorization": "Basic RXh5NjM6VEVTVF9QQVNTV09SRA=="
+  },
+  "body": null
+}
