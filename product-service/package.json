@@ -4,6 +4,7 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
+    "deploy": "sls deploy --aws-profile main",
     "test": "jest --config=jest.config.ts"
   },
   "engines": {
