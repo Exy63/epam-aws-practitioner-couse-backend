@@ -17,7 +17,9 @@ export const importProductsFile: AWS["functions"]["k"] = {
         },
         authorizer: {
           arn: "arn:aws:lambda:eu-west-1:203651338148:function:authorization-service-dev-basicAuthorizer",
-          type: "token",
+          type: "request",
+          identitySource: 'method.request.header.Authorization',
+          resultTtlInSeconds: 0
         },
       },
     },
