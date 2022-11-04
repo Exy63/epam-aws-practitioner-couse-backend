@@ -48,6 +48,21 @@ const serverlessConfiguration: AWS = {
   },
   // import the function via paths
   functions,
+  resources: {
+    Resources: {
+      AccessDeniedGwResponse: {
+        Type: "AWS::ApiGateway::GatewayResponse",
+        Properties: {
+          ResponseParameters: {
+            "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+            "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+          },
+          ResponseType: "ACCESS_DENIED",
+          RestApiId: "f297517wl8",
+        },
+      },
+    },
+  },
   package: { individually: true },
   custom: {
     esbuild: {
