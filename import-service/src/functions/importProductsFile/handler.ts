@@ -28,8 +28,11 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": '*',
+      },
       body: url,
-    }
+    };
   } catch (e) {
     return formatJSONErrorResponse(e, 500)
   }
