@@ -61,6 +61,17 @@ const serverlessConfiguration: AWS = {
           RestApiId: "f297517wl8",
         },
       },
+      UnauthorizedGwResponse: {
+        Type: "AWS::ApiGateway::GatewayResponse",
+        Properties: {
+          ResponseParameters: {
+            "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+            "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+          },
+          ResponseType: "UNAUTHORIZED",
+          RestApiId: "f297517wl8",
+        },
+      },
     },
   },
   package: { individually: true },
