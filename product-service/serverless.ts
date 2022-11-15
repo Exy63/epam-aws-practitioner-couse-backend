@@ -1,62 +1,79 @@
-import type { AWS } from '@serverless/typescript'
+import type { AWS } from "@serverless/typescript";
 
-import * as functions from '@functions'
-import dbConfig from '@db/config'
+import * as functions from "@functions";
+import dbConfig from "@db/config";
 
 const serverlessConfiguration: AWS = {
-  service: 'product-service',
-  frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  service: "product-service",
+  frameworkVersion: "3",
+  plugins: ["serverless-esbuild"],
   provider: {
-    name: 'aws',
-    runtime: 'nodejs14.x',
-    stage: 'dev',
-    region: 'eu-west-1',
+    name: "aws",
+    runtime: "nodejs14.x",
+    stage: "dev",
+    region: "eu-west-1",
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
     environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
+      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      CREATE_PRODUCT_TOPIC_ARN: { Ref: "CreateProductTopic" },
     },
-    iamRoleStatements: [
-      {
-        Effect: 'Allow',
-        Action: 'dynamodb:Scan',
-        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: "Allow",
+            Action: "dynamodb:*",
+            Resource: { "Fn::GetAtt": ["ProductsTable", "Arn"] },
+          },
+          {
+            Effect: "Allow",
+            Action: "dynamodb:*",
+            Resource: { "Fn::GetAtt": ["StocksTable", "Arn"] },
+          },
+          {
+            Effect: "Allow",
+            Action: "sqs:*",
+            Resource: { "Fn::GetAtt": ["CatalogItemsQueue", "Arn"] },
+          },
+          {
+            Effect: "Allow",
+            Action: "sns:*",
+            Resource: { Ref: "CreateProductTopic" },
+          },
+        ],
       },
-      {
-        Effect: 'Allow',
-        Action: 'dynamodb:Query',
-        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
-      },
-      {
-        Effect: 'Allow',
-        Action: 'dynamodb:PutItem',
-        Resource: { 'Fn::GetAtt': ['ProductsTable', 'Arn'] },
-      },
-      {
-        Effect: 'Allow',
-        Action: 'dynamodb:Scan',
-        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
-      },
-      {
-        Effect: 'Allow',
-        Action: 'dynamodb:Query',
-        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
-      },
-      {
-        Effect: 'Allow',
-        Action: 'dynamodb:PutItem',
-        Resource: { 'Fn::GetAtt': ['StocksTable', 'Arn'] },
-      },
-    ],
+    },
   },
   // import the function via paths
   functions,
   resources: {
-    Resources: dbConfig,
+    Resources: {
+      ...dbConfig,
+      CatalogItemsQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "CatalogItemsQueue",
+        },
+      },
+      CreateProductTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          TopicName: "CreateProductTopic",
+        },
+      },
+      CreateProductSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Endpoint: "ilyaprikaz@gmail.com",
+          Protocol: "email",
+          TopicArn: { Ref: "CreateProductTopic" },
+        },
+      },
+    },
   },
   package: { individually: true },
   custom: {
@@ -64,13 +81,13 @@ const serverlessConfiguration: AWS = {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: ['aws-sdk'],
-      target: 'node14',
-      define: { 'require.resolve': undefined },
-      platform: 'node',
+      exclude: ["aws-sdk"],
+      target: "node14",
+      define: { "require.resolve": undefined },
+      platform: "node",
       concurrency: 10,
     },
   },
-}
+};
 
-module.exports = serverlessConfiguration
+module.exports = serverlessConfiguration;
