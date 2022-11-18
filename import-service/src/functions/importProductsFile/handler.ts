@@ -9,7 +9,6 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3({ region: 'eu-west-1' })
 
 const BUCKET = 'superstore-import'
-const FRONTEND_URL = 'https://d33fy6chog9gs4.cloudfront.net'
 
 const importProductsFile: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
@@ -30,10 +29,10 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<
     return {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': FRONTEND_URL,
+        "Access-Control-Allow-Origin": '*',
       },
       body: url,
-    }
+    };
   } catch (e) {
     return formatJSONErrorResponse(e, 500)
   }
