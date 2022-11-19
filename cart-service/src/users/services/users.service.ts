@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { dbPool } from '@db';
+import { dbClient } from '@db';
 import { throwError } from 'src/shared/helpers';
 import { v4 } from 'uuid';
 import bcrypt from 'bcryptjs';
@@ -8,10 +8,10 @@ import { User, userTableName, userTableValues } from '../models';
 
 @Injectable()
 export class UsersService {
-  private readonly db = dbPool;
-
   async findOne(userId: string): Promise<User> {
     try {
+      dbClient.connect();
+
       const query = `
       SELECT id, name, email 
       FROM ${userTableName} 
@@ -19,15 +19,19 @@ export class UsersService {
       ;`;
       const values = [userId];
 
-      const { rows: res } = await this.db.query(query, values);
-      return res;
+      const { rows: res } = await dbClient.query(query, values);
+      return res?.[0] as User;
     } catch (e) {
       throwError(e, 502);
+    } finally {
+      dbClient.end();
     }
   }
 
   async createOne(data: User): Promise<string> {
     try {
+      dbClient.connect();
+
       const { name, email } = data;
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(data.password, salt);
@@ -39,15 +43,13 @@ export class UsersService {
       `;
       const values = [id, name, email, hashedPassword];
 
-      await this.db.query(query, values);
+      await dbClient.query(query, values);
 
       return id;
     } catch (e) {
       throwError(e, 502);
+    } finally {
+      dbClient.end();
     }
-  }
-
-  test() {
-    console.log('HELLO! DASDKASKJDASJKDJHADL')
   }
 }
