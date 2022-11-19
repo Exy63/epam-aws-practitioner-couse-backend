@@ -35,6 +35,23 @@ INSERT INTO "users" ("id", "name", "email", "password")
 	('bb05ed83-cfcf-4690-a5e1-fd83f7b77edc', 'Peter', null , 'peterParker1999'),  
 	('59904ebf-7173-45fa-a752-8f833077e41c', 'Ilya', 'helloWorld@code.com', 'youBetterNotToKnowIt');
 
+-- orders
+CREATE TYPE "order_status" AS ENUM('paid', 'delivered');
+CREATE TABLE IF NOT EXISTS "orders" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"user_id" uuid REFERENCES "users" ("id"),
+	"cart_id" uuid REFERENCES "carts" ("id"),
+	"payment" JSON,
+	"delivery" JSON,
+	"comments" VARCHAR ( 255 ),
+	"status" order_status,
+	"total" INTEGER
+);
+INSERT INTO "orders" ("id", "user_id", "cart_id", "payment", "delivery", "comments", "status", "total") 
+	VALUES 
+	('1bb2bb6c-be1d-49bf-add5-807b3fbaee6c', '59904ebf-7173-45fa-a752-8f833077e41c', '5f39884c-af73-4f02-be89-95eb7825c78e', null, '{"type":"PTT","address":"Izmir, Turkey"}', 'Please deliver the order to my office!', 'paid', 1000),
+	('f8b4eceb-4317-40e0-99d4-47dc20ad1dd9', '9ae6f337-87c8-4c27-b36e-bbd10df2221f', '107066ee-ee78-4188-b6ed-614c626579f4', null, null, null, 'delivered', 500);
+
 
 
 
