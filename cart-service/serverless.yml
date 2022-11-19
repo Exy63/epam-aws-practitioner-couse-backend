@@ -1,4 +1,7 @@
 service: cart-service
+frameworkVersion: "3"
+
+useDotenv: true
 
 plugins:
   - serverless-offline
@@ -8,10 +11,19 @@ provider:
   runtime: nodejs14.x
   stage: dev
   region: eu-west-1
+  environment:
+    PG_HOST: ${env:PG_HOST}
+    PG_PORT: ${env:PG_PORT}
+    PG_DATABASE: ${env:PG_DATABASE}
+    PG_USER: ${env:PG_USER}
+    PG_PASSWORD: ${env:PG_PASSWORD}
+
+custom:
+  lambdasPath: dist/lambdas/index
 
 functions:
   main:
-    handler: dist/main.handler
+    handler: dist/serverless.handler
     events:
       - http:
           method: ANY
@@ -19,3 +31,15 @@ functions:
       - http:
           method: ANY
           path: '{proxy+}'
+  createUser:
+    handler: ${self:custom.lambdasPath}.createUser
+    events:
+      - http:
+          method: POST
+          path: user
+  getUser:
+    handler: ${self:custom.lambdasPath}.getUser
+    events:
+      - http:
+          method: GET
+          path: user/{id}

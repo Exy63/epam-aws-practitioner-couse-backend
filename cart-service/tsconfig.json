@@ -11,6 +11,10 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@helpers": ["src/shared/helpers"],
+      "@db": ["src/shared/db"]
+    }
   }
 }
