@@ -12,7 +12,7 @@ export class UsersService {
   async findOne(userId: string): Promise<User> {
     const dbClient = new Client(dbOptions);
     try {
-      dbClient.connect();
+      await dbClient.connect();
 
       const query = `
       SELECT id, name, email 
@@ -33,7 +33,7 @@ export class UsersService {
   async createOne(data: User): Promise<string> {
     const dbClient = new Client(dbOptions);
     try {
-      dbClient.connect();
+      await dbClient.connect();
 
       const { name, email } = data;
       const salt = await bcrypt.genSalt(10);
