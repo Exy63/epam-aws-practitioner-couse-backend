@@ -43,3 +43,21 @@ functions:
       - http:
           method: GET
           path: user/{id}
+  getOrder:
+    handler: ${self:custom.lambdasPath}.getOrder
+    events:
+      - http:
+          method: GET
+          path: order/{id}
+  createOrder:
+    handler: ${self:custom.lambdasPath}.createOrder
+    events:
+      - http:
+          method: POST
+          path: order
+  updateOrder:
+    handler: ${self:custom.lambdasPath}.updateOrder
+    events:
+      - http:
+          method: PATCH
+          path: order/{id}
