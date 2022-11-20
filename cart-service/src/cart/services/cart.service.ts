@@ -28,8 +28,9 @@ export class CartService {
       ;`;
       const values = [userId];
 
-      const cartId: string = (await dbClient.query(query, values)).rows[0].id;
-      if (!cartId) throwError('Could not find a cart by userId');
+      const cartId: string = (await dbClient.query(query, values))?.rows?.[0]
+        ?.id;
+      if (!cartId) return undefined;
 
       const queryItems = `
       SELECT "product_id", "count" 
@@ -61,10 +62,12 @@ export class CartService {
 
       const res: Cart = {
         id: cartId,
-        items: items.map(item => ({
-          product: { ...ixProductList[item.product_id], count: undefined },
-          count: item.count,
-        })),
+        items: items.length
+          ? items.map(item => ({
+              product: { ...ixProductList[item.product_id], count: undefined },
+              count: item.count,
+            }))
+          : [],
       };
       return res;
     } catch (e) {
@@ -89,7 +92,7 @@ export class CartService {
 
       await dbClient.query(query, values);
 
-      return await this.findByUserId(id);
+      return await this.findByUserId(userId);
     } catch (e) {
       throwError(e, 502);
     } finally {
