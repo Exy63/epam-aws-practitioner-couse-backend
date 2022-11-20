@@ -14,7 +14,7 @@ INSERT INTO "users" ("id", "name", "email", "password")
 -- carts
 CREATE TABLE IF NOT EXISTS "carts" (
 	"id" uuid PRIMARY KEY NOT NULL,
-	"user_id" uuid REFERENCES "users" ("id") NOT NULL,
+	"user_id" uuid REFERENCES "users" ("id") UNIQUE NOT NULL,
 	"created_at" timestamp NOT NULL default now(),
 	"updated_at" timestamp NOT NULL default now()
 );
