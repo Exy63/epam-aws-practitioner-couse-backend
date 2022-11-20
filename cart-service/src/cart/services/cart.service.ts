@@ -124,7 +124,45 @@ export class CartService {
   //   return { ...updatedCart };
   // }
 
-  // removeByUserId(userId): void {
-  //   this.userCarts[userId] = null;
-  // }
+  async removeByUserId(userId): Promise<void> {
+    const dbClient = new Client(dbOptions);
+    try {
+      await dbClient.connect();
+
+      const queryFind = `
+      SELECT "id" from ${cartTableName}
+      WHERE "user_id" = $1;
+      `;
+      const valuesFind = [userId];
+
+      const { id: cartId } = (
+        await dbClient.query(queryFind, valuesFind)
+      )?.rows?.[0];
+      console.log(
+        '🚀 ~ file: cart.service.ts ~ line 139 ~ CartService ~ removeByUserId ~ cartId',
+        cartId,
+      );
+      if (!cartId) return;
+
+      const queryDeleteCartItem = `
+      DELETE FROM ${cartItemTableName}
+      WHERE "cart_id" = $1;
+      `;
+      const valuesDeleteCartItem = [cartId];
+
+      await dbClient.query(queryDeleteCartItem, valuesDeleteCartItem);
+
+      const queryDeleteCart = `
+      DELETE FROM ${cartTableName}
+      WHERE "id" = $1;
+      `;
+      const valuesDeleteCart = [cartId];
+
+      await dbClient.query(queryDeleteCart, valuesDeleteCart);
+    } catch (e) {
+      throwError(e, 502);
+    } finally {
+      dbClient.end();
+    }
+  }
 }
