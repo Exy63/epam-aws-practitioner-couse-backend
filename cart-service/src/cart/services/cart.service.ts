@@ -74,27 +74,38 @@ export class CartService {
     }
   }
 
-  // createByUserId(userId: string) {
-  //   const id = v4(v4());
-  //   const userCart = {
-  //     id,
-  //     items: [],
-  //   };
+  async createByUserId(userId: string) {
+    const dbClient = new Client(dbOptions);
+    try {
+      await dbClient.connect();
 
-  //   this.userCarts[userId] = userCart;
+      const id = v4();
 
-  //   return userCart;
-  // }
+      const query = `
+      INSERT INTO ${cartTableName}("id", "user_id")
+      VALUES ($1, $2);
+      `;
+      const values = [id, userId];
 
-  // findOrCreateByUserId(userId: string): Cart {
-  //   const userCart = this.findByUserId(userId);
+      await dbClient.query(query, values);
 
-  //   if (userCart) {
-  //     return userCart;
-  //   }
+      return await this.findByUserId(id);
+    } catch (e) {
+      throwError(e, 502);
+    } finally {
+      dbClient.end();
+    }
+  }
 
-  //   return this.createByUserId(userId);
-  // }
+  async findOrCreateByUserId(userId: string): Promise<Cart> {
+    const userCart = await this.findByUserId(userId);
+
+    if (userCart) {
+      return userCart;
+    }
+
+    return await this.createByUserId(userId);
+  }
 
   // updateByUserId(userId: string, { items }: Cart): Cart {
   //   const { id, ...rest } = this.findOrCreateByUserId(userId);
