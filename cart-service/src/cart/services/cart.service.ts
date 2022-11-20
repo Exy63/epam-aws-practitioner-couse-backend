@@ -110,19 +110,49 @@ export class CartService {
     return await this.createByUserId(userId);
   }
 
-  // updateByUserId(userId: string, { items }: Cart): Cart {
-  //   const { id, ...rest } = this.findOrCreateByUserId(userId);
+  async updateByUserId(userId: string, { items }: Cart): Promise<Cart> {
+    const dbClient = new Client(dbOptions);
+    try {
+      await dbClient.connect();
 
-  //   const updatedCart = {
-  //     id,
-  //     ...rest,
-  //     items: [...items],
-  //   };
+      const { id: cartId, ...rest } = await this.findOrCreateByUserId(userId);
 
-  //   this.userCarts[userId] = { ...updatedCart };
+      const updatedCart = {
+        id: cartId,
+        ...rest,
+        items: [...items],
+      };
 
-  //   return { ...updatedCart };
-  // }
+      const productIdsForDelete = updatedCart.items.map(
+        item => `'${item.product.id}'`,
+      );
+      const queryDelete = `
+      DELETE FROM ${cartItemTableName}
+      WHERE 
+      "cart_id" = $1
+      AND
+      "product_id" IN (${productIdsForDelete.join(', ')})
+      ;`;
+      const valuesDelete = [cartId];
+      await dbClient.query(queryDelete, valuesDelete);
+
+      let queryInsert = `
+      INSERT INTO ${cartItemTableName} ("cart_id", "product_id", "count")
+      VALUES \n`;
+      updatedCart.items.forEach(item => {
+        queryInsert += `($1, '${item.product.id}', '${item.count}'),`;
+      });
+      queryInsert = queryInsert.slice(0, -1); // remove comma
+      const valuesInsert = [cartId];
+      await dbClient.query(queryInsert, valuesInsert);
+
+      return await this.findByUserId(userId);
+    } catch (e) {
+      throwError(e, 502);
+    } finally {
+      dbClient.end();
+    }
+  }
 
   async removeByUserId(userId): Promise<void> {
     const dbClient = new Client(dbOptions);
@@ -138,10 +168,6 @@ export class CartService {
       const { id: cartId } = (
         await dbClient.query(queryFind, valuesFind)
       )?.rows?.[0];
-      console.log(
-        '🚀 ~ file: cart.service.ts ~ line 139 ~ CartService ~ removeByUserId ~ cartId',
-        cartId,
-      );
       if (!cartId) return;
 
       const queryDeleteCartItem = `
