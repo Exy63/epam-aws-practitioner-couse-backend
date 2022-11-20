@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS "cart_items" (
 );
 INSERT INTO "cart_items" ("cart_id", "product_id", "count") 
 	VALUES 
-	('5f39884c-af73-4f02-be89-95eb7825c78e', '1c02e02b-7a04-47e3-8a37-205dcaf3b000', 3), 
-	('107066ee-ee78-4188-b6ed-614c626579f4', '1c02e02b-7a04-47e3-8a37-205dcaf3b000', 6);
+	('5f39884c-af73-4f02-be89-95eb7825c78e', 'beb8b148-73e3-4cf0-b948-f8c817b8c1b1', 3), 
+	('107066ee-ee78-4188-b6ed-614c626579f4', 'beb8b148-73e3-4cf0-b948-f8c817b8c1b1', 6);
 
 -- orders
 CREATE TYPE "order_status" AS ENUM('paid', 'delivered');
