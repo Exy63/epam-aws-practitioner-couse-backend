@@ -1,3 +1,3 @@
 // User
-export { createUser } from './create-user';
-export { getUser } from './get-user';
+export { createUser } from './user/create-user';
+export { getUser } from './user/get-user';
