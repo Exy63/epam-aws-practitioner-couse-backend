@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { dbClient } from '@db';
+import { dbOptions } from '@db';
 import { throwError } from 'src/shared/helpers';
 import { v4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 
 import { User, userTableName, userTableValues } from '../models';
+import { Client } from 'pg';
 
 @Injectable()
 export class UsersService {
   async findOne(userId: string): Promise<User> {
+    const dbClient = new Client(dbOptions);
     try {
       dbClient.connect();
 
@@ -29,6 +31,7 @@ export class UsersService {
   }
 
   async createOne(data: User): Promise<string> {
+    const dbClient = new Client(dbOptions);
     try {
       dbClient.connect();
 
