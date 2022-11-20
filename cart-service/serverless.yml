@@ -17,6 +17,16 @@ provider:
     PG_DATABASE: ${env:PG_DATABASE}
     PG_USER: ${env:PG_USER}
     PG_PASSWORD: ${env:PG_PASSWORD}
+    GET_PRODUCT_LIST_LAMBDA_ARN: ${env:GET_PRODUCT_LIST_LAMBDA_ARN}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'lambda:InvokeFunction'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'lambda:InvokeAsync'
+          Resource: '*'
 
 custom:
   lambdasPath: dist/lambdas/index
