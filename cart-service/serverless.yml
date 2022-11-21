@@ -76,10 +76,10 @@ functions:
     events:
       - http:
           method: GET
-          path: cart/{id}
+          path: cart/{userId}
   clearUserCart:
     handler: ${self:custom.lambdasPath}.clearUserCart
     events:
       - http:
           method: DELETE
-          path: cart/{id}
+          path: cart/{userId}

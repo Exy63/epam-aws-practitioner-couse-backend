@@ -9,8 +9,8 @@ import { AppRequest } from 'src/shared';
 export const findUserCart = async (event: APIGatewayEvent) => {
   console.log(`Lambda findUserCart is invoked!`, event);
   try {
-    const { id } = event.pathParameters;
-    if (!isUUID(id)) throwError('Not valid ID', 400);
+    const { userId } = event.pathParameters;
+    if (!isUUID(userId)) throwError('Not valid ID', 400);
 
     const cartController = new CartController(
       new CartService(),
@@ -19,7 +19,7 @@ export const findUserCart = async (event: APIGatewayEvent) => {
 
     const { data } = await cartController.findUserCart({
       user: {
-        id,
+        id: userId,
         name: 'User',
       },
     } as AppRequest);
