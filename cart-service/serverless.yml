@@ -89,3 +89,9 @@ functions:
       - http:
           method: PUT
           path: cart/{userId}
+  checkout:
+    handler: ${self:custom.lambdasPath}.checkout
+    events:
+      - http:
+          method: POST
+          path: cart/checkout/{userId}

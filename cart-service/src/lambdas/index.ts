@@ -9,3 +9,4 @@ export { updateOrder } from './order/update-order';
 export { findUserCart } from './cart/find-user-cart';
 export { clearUserCart } from './cart/clear-user-cart';
 export { updateUserCart } from './cart/update-user-cart';
+export { checkout } from './cart/checkout';

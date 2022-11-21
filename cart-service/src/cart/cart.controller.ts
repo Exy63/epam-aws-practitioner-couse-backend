@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 
 // import { BasicAuthGuard, JwtAuthGuard } from '../auth';
-import { OrderService } from '../order';
+import { OrderEntity, OrderService, OrderStatusEnum } from '../order';
 import { AppRequest, getUserIdFromRequest } from '../shared';
 
 import { calculateCartTotal } from './models-rules';
@@ -74,7 +74,15 @@ export class CartController {
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
   @Post('checkout')
-  async checkout(@Req() req: AppRequest, @Body() body) {
+  async checkout(
+    @Req() req: AppRequest,
+    @Body()
+    {
+      payment,
+      delivery,
+      comments,
+    }: { payment: string; delivery: string; comments: string },
+  ) {
     const userId = getUserIdFromRequest(req);
     const cart = await this.cartService.findByUserId(userId);
 
@@ -89,13 +97,17 @@ export class CartController {
     }
 
     const { id: cartId, items } = cart;
+    console.log('🚀  checkout ~ items', items);
     const total = calculateCartTotal(cart);
     const order = await this.orderService.create({
-      ...body, // TODO: validate and pick only necessary data
-      userId,
-      cartId,
-      items,
+      user_id: userId,
+      cart_id: cartId,
+      // items,
+      status: OrderStatusEnum.paid,
       total,
+      payment,
+      delivery,
+      comments,
     });
     await this.cartService.removeByUserId(userId);
 
