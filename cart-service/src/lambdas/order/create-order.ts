@@ -4,7 +4,7 @@ import { isUUID } from 'validator';
 import { OrderRequest, OrderService, OrderStatusEnum } from 'src/order';
 
 export const createOrder = async (event: APIGatewayEvent) => {
-  console.log(`Lambda ${createOrder.name} is invoked!`, event);
+  console.log(`Lambda createOrder is invoked!`, event);
   try {
     const data: OrderRequest = JSON.parse(event.body);
     const { userId, cartId, payment, delivery, comments, status, total } = data;

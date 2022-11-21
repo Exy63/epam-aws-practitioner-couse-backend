@@ -10,7 +10,7 @@ export const findUserCart = async (event: APIGatewayEvent) => {
   console.log(`Lambda findUserCart is invoked!`, event);
   try {
     const { userId } = event.pathParameters;
-    if (!isUUID(userId)) throwError('Not valid ID', 400);
+    if (!isUUID(userId)) throwError('Not valid userId', 400);
 
     const cartController = new CartController(
       new CartService(),
@@ -20,7 +20,6 @@ export const findUserCart = async (event: APIGatewayEvent) => {
     const { data } = await cartController.findUserCart({
       user: {
         id: userId,
-        name: 'User',
       },
     } as AppRequest);
 

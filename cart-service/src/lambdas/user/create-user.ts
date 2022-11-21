@@ -4,7 +4,7 @@ import { UsersService } from 'src/users';
 import { isEmail } from 'validator';
 
 export const createUser = async (event: APIGatewayEvent) => {
-  console.log(`Lambda ${createUser.name} is invoked!`, event);
+  console.log(`Lambda createUser is invoked!`, event);
   try {
     const data = JSON.parse(event.body);
     const { name, email, password } = data;

@@ -4,7 +4,7 @@ import { OrderService, OrderStatusEnum } from 'src/order';
 import { isUUID } from 'validator';
 
 export const updateOrder = async (event: APIGatewayEvent) => {
-  console.log(`Lambda ${updateOrder.name} is invoked!`, event);
+  console.log(`Lambda updateOrder is invoked!`, event);
   try {
     const data: {
       delivery?: {

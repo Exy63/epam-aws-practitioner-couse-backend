@@ -4,7 +4,7 @@ import { isUUID } from 'validator';
 import { OrderService } from 'src/order';
 
 export const getOrder = async (event: APIGatewayEvent) => {
-  console.log(`Lambda ${getOrder.name} is invoked!`, event);
+  console.log(`Lambda getOrder is invoked!`, event);
   try {
     const { id } = event.pathParameters;
     if (!isUUID(id)) throwError('Not valid ID', 400);

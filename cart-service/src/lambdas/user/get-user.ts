@@ -4,7 +4,7 @@ import { UsersService } from 'src/users';
 import { isUUID } from 'validator';
 
 export const getUser = async (event: APIGatewayEvent) => {
-  console.log(`Lambda ${getUser.name} is invoked!`, event);
+  console.log(`Lambda getUser is invoked!`, event);
   try {
     const { id } = event.pathParameters;
     if (!isUUID(id)) throwError('Not valid ID', 400);
