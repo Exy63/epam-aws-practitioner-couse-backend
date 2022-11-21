@@ -71,3 +71,9 @@ functions:
       - http:
           method: PATCH
           path: order/{id}
+  findUserCart:
+    handler: ${self:custom.lambdasPath}.findUserCart
+    events:
+      - http:
+          method: GET
+          path: cart/{id}

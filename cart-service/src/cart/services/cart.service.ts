@@ -41,7 +41,7 @@ export class CartService {
 
       const items: { product_id: string; count: number }[] = (
         await dbClient.query(queryItems, valuesItems)
-      ).rows;
+      )?.rows;
 
       const { Payload } = await lambda
         .invoke({
