@@ -7,3 +7,4 @@ export { createOrder } from './order/create-order';
 export { updateOrder } from './order/update-order';
 // Cart
 export { findUserCart } from './cart/find-user-cart';
+export { clearUserCart } from './cart/clear-user-cart';

@@ -5,10 +5,8 @@ import { Client } from 'pg';
 import { v4 } from 'uuid';
 import {
   Cart,
-  CartEntity,
   cartItemTableName,
   cartTableName,
-  Product,
 } from '../models';
 import * as _ from 'lodash';
 import AWS from 'aws-sdk';
@@ -177,14 +175,6 @@ export class CartService {
       const valuesDeleteCartItem = [cartId];
 
       await dbClient.query(queryDeleteCartItem, valuesDeleteCartItem);
-
-      const queryDeleteCart = `
-      DELETE FROM ${cartTableName}
-      WHERE "id" = $1;
-      `;
-      const valuesDeleteCart = [cartId];
-
-      await dbClient.query(queryDeleteCart, valuesDeleteCart);
     } catch (e) {
       throwError(e, 502);
     } finally {
