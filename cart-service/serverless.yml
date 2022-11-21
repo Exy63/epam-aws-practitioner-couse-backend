@@ -83,3 +83,9 @@ functions:
       - http:
           method: DELETE
           path: cart/{userId}
+  updateUserCart:
+    handler: ${self:custom.lambdasPath}.updateUserCart
+    events:
+      - http:
+          method: PUT
+          path: cart/{userId}
