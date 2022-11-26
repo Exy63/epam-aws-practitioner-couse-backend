@@ -1,14 +1,15 @@
-# # dont need it for runtime launch
+# dont need it for runtime launch
 /node_modules
 /dist
 /test
 
-# # useless
+# useless
+/.elasticbeanstalk
 /.serverless
 serverless.yml
 README.md
 .git
 
-# #sensetive info
+# sensetive info
 .env.example
 .env
