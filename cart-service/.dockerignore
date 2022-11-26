@@ -1,0 +1,14 @@
+# # dont need it for runtime launch
+/node_modules
+/dist
+/test
+
+# # useless
+/.serverless
+serverless.yml
+README.md
+.git
+
+# #sensetive info
+.env.example
+.env
